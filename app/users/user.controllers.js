@@ -1,3 +1,5 @@
+const catchAsync = require("../../shared/catchAsync");
+const sendResponse = require("../../shared/sendResponse");
 const UserService = require("./user.service");
 
 const createUser = async (req, res) => {
@@ -36,47 +38,20 @@ const signin = async (req, res) => {
   }
 };
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await UserService.getAllUsers();
+  sendResponse(res, 200, true, "All users fetched successfully", result); 
+});
 
-const getAllUsers = async (req, res) => {
-  try {
-    const result = await UserService.getAllUsers();
-
-    return res.status(200).json({
-      success: true,
-      message: "Users fetched successfully",
-      data: result,
-    });
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: err.message || "Failed to fetch the users!",
-    });
-  }
-};
-
-
-const getUserById = async (req, res) => {
-  try {
-    const id = req.params.id
-    const result = await UserService.getUserById(id);
-
-    return res.status(200).json({
-      success: true,
-      message: "User by id fetched successfully",
-      data: result,
-    });
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: err.message || "Failed to fetch the user by id!",
-    });
-  }
-};
-
+const getUserById = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await UserService.getUserById(id);
+  sendResponse(res, 200, true, "User by id fetched successfully", result); 
+});
 
 const deleteUserById = async (req, res) => {
   try {
-    const id = req.params.id
+    const id = req.params.id;
     const result = await UserService.deleteUserById(id);
 
     return res.status(200).json({
@@ -94,8 +69,8 @@ const deleteUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   try {
-    const id = req.params.id
-    const payload = req.body
+    const id = req.params.id;
+    const payload = req.body;
     const result = await UserService.updateUserById(id, payload);
 
     return res.status(200).json({
@@ -111,15 +86,13 @@ const updateUserById = async (req, res) => {
   }
 };
 
-
-
 const UserControllers = {
   createUser,
   signin,
   getAllUsers,
   getUserById,
   deleteUserById,
-  updateUserById
+  updateUserById,
 };
 
 module.exports = UserControllers;
