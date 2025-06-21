@@ -9,8 +9,13 @@ const createProduct = async (payload) => {
     return result;
 };
 
+const uploadFile = (payload) =>{
+    return payload
+}
+
 const ProductService = {
-    createProduct
+    createProduct,
+    uploadFile
 }
 
 module.exports = ProductService
