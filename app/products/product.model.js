@@ -17,7 +17,8 @@ const productSchema = new mongoose.Schema({
         type: [String]
     },
     category: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: "Category",
         required: true
     },
     quantity: {
@@ -29,3 +30,6 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model("Product", productSchema)
 
 module.exports = Product
+
+
+// Mobile Phones, laptops, watches

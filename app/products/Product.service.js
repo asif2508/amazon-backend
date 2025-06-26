@@ -1,8 +1,11 @@
 const Product = require("./product.model");
 
-const createProduct = async (payload) => {
-    const { name, price, description, images, category, quantity } = payload
-    const result = await Product.create({ name, price, description, images, category, quantity });
+const createProduct = async (payload, files) => {
+    const { name, price, description, category, quantity } = payload
+    const baseURL = "http://localhost:5000/uploads/"
+    const {filename} = files //file-1750927143629-313136988.jpeg
+    // http://localhost:5000/uploads/file-1750927143629-313136988.jpeg
+    const result = await Product.create({ name, price, description, images: [`${baseURL}${filename}`], category, quantity });
     if(!result){
         throw new Error("Failed to create the product")
     }
@@ -13,9 +16,15 @@ const uploadFile = (payload) =>{
     return payload
 }
 
+const getAllProducts = async () => {
+    const result = await Product.find().populate("category")
+    return result
+}
+
 const ProductService = {
     createProduct,
-    uploadFile
+    uploadFile,
+    getAllProducts
 }
 
 module.exports = ProductService
