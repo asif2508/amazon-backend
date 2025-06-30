@@ -1,5 +1,6 @@
 const User = require("./user.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 const createUser = async (payload) => {
   const { name, email, password, role } = payload;
   const isExist = await User.findOne({ email: email });
@@ -38,8 +39,20 @@ const signin = async (payload) =>{
         throw new Error("Password is wrong!")
     }
 
-    return isExist
+    // access token, refresh token
+    const token = jwt.sign({id: isExist?._id, email: isExist?.email, role: isExist?.role}, process.env.JWT_SECRET, {expiresIn: "30d"})
 
+    return {
+        user: isExist,
+        token: token
+    }
+
+}
+
+
+const autoLogin = async(payload) =>{
+    const user = await User.findById(payload.id)
+    return user
 }
 
 const getAllUsers = async () =>{
@@ -77,7 +90,8 @@ const UserService = {
   getAllUsers,
   getUserById,
   deleteUserById,
-  updateUserById
+  updateUserById,
+  autoLogin
 };
 
 module.exports = UserService;

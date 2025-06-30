@@ -7,6 +7,7 @@ const productRoute = require("./app/products/Product.routes")
 const categoryRoute = require("./app/category/category.routes")
 const dbConnect = require('./db/dbConnect')
 const path = require('path')
+require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 

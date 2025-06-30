@@ -86,6 +86,12 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const autoLogin = catchAsync(async (req, res) => {
+  const payload = req.user
+  const result = await UserService.autoLogin(payload);
+  sendResponse(res, 200, true, "User by id fetched successfully", result); 
+});
+
 const UserControllers = {
   createUser,
   signin,
@@ -93,6 +99,7 @@ const UserControllers = {
   getUserById,
   deleteUserById,
   updateUserById,
+  autoLogin
 };
 
 module.exports = UserControllers;
