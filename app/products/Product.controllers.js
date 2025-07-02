@@ -5,6 +5,7 @@ const ProductService = require("./Product.service");
 const createProduct = catchAsync(async(req, res)=>{
     const files = req.file
     const {data} = req.body;
+    console.log(files, data)
     const payload = JSON.parse(data)
     const result = await ProductService.createProduct(payload, files);
     sendResponse(res, 201, true, "Product created successfully", result);
