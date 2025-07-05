@@ -21,10 +21,30 @@ const getAllProducts = async () => {
     return result
 }
 
+
+const deleteProductById = async(id) =>{
+    console.log("id", id)
+    const result = await Product.findByIdAndDelete(id)
+    if(!result){
+        throw new Error("Failed to delete the product!")
+    }
+    return result
+}
+
+const updateProductById = async(id, payload) => {
+    const result = await Product.findByIdAndUpdate(id, payload, {new: true})
+    if(!result){
+        throw new Error("Failed to update the product!")
+    }
+    return result
+}
+
 const ProductService = {
     createProduct,
     uploadFile,
-    getAllProducts
+    getAllProducts,
+    deleteProductById,
+    updateProductById
 }
 
 module.exports = ProductService

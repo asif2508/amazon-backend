@@ -18,7 +18,14 @@ const createCategory = async (payload, icon) => {
     return result;
 };
 
+
+const getAllCategories = async () => {
+    const result = await Category.find()
+    return result
+}
+
 const CategoryService = {
-    createCategory
+    createCategory,
+    getAllCategories
 }
 module.exports = CategoryService
