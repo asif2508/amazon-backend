@@ -5,6 +5,8 @@ const port = 5000
 const userRoute = require('./app/users/user.route')
 const productRoute = require("./app/products/Product.routes")
 const categoryRoute = require("./app/category/category.routes")
+const orderRoute = require("./app/order/order.routes")
+
 const dbConnect = require('./db/dbConnect')
 const path = require('path')
 require('dotenv').config()
@@ -20,7 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/users', userRoute)
 app.use('/api/products', productRoute)
 app.use('/api/category', categoryRoute)
-
+app.use('/api/order', orderRoute)
 
 
 app.get('/', (req, res) => {
