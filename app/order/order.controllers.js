@@ -9,8 +9,17 @@ const createCheckoutSession = catchAsync(async (req, res) => {
   sendResponse(res, 200, true, "checkout sessions created successfully", result);
 });
 
+
+const markAsSuccessful = catchAsync(async (req, res) => {
+  const orderId = req.params.id;
+  const result = await OrderService.markAsSuccessful(orderId)
+  const frontendUrl = 'http://localhost:5173/success'
+  res.redirect(frontendUrl)
+});
+
 const OrderControllers = {
   createCheckoutSession,
+  markAsSuccessful
 };
 
 module.exports = OrderControllers;

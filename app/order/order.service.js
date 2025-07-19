@@ -1,14 +1,15 @@
 const Product = require('../products/product.model');
 
 require('dotenv').config()
-
+const User = require('../users/user.model');
+const Order = require('./order.model');
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
 const YOUR_DOMAIN = 'http://localhost:5000';
 const createCheckoutSession = async(payload) =>{
 
-    const {cart} = payload
-
+    const {cart, shipping} = payload
+    
     const checkOutItems = await Promise.all(
       cart.map(async (item) => {
         const product = await Product.findById(item.productId);
@@ -27,18 +28,49 @@ const createCheckoutSession = async(payload) =>{
         };
       })
     );
+
+    const user = await User.findOne({email: shipping.email})
+    let total = 0
+    for(const i of checkOutItems){
+        total = total + ((i?.price_data?.unit_amount / 100) * i?.quantity)
+    }
+    const data = {
+       products: cart,
+       shipping,
+       customerId: user?._id,
+       price: total
+    }
+
+    const order = await Order.create(data)
+
     const session = await stripe.checkout.sessions.create({
         line_items: checkOutItems,
         mode: 'payment',
-        success_url: `${YOUR_DOMAIN}/success`,
-        cancel_url: `${YOUR_DOMAIN}/cancel`,
+        success_url: `${YOUR_DOMAIN}/api/order/mark-as-successful/${order._id}`,
+        cancel_url: `${YOUR_DOMAIN}/api/order/cancel/${order._id}`,
     })
 
-  return session
+  return session?.url
+}
+
+
+const markAsSuccessful = async(orderId) =>{
+    const findOrder = await Order.findById(orderId)
+
+    if(!findOrder){
+        throw new Error("Order not found!")
+    }
+
+    if(findOrder?.status !== "pending"){
+        throw new Error("Order is not pending!")
+    }
+    const result = await Order.findByIdAndUpdate(orderId, {status: "paid"})
+    return result
 }
 
 const OrderService = {
-    createCheckoutSession
+    createCheckoutSession,
+    markAsSuccessful
 }
 
 module.exports = OrderService
