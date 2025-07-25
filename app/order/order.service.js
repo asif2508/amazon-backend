@@ -82,10 +82,26 @@ const getAllOrders = async (page = 1, limit = 10) => {
   };
 };
 
+
+const updateOrderStatus = async (orderId, status) => {
+  if(status !== "shipped" && status !== "completed" && status !== "cancelled"){
+    throw new Error("Invalid status!")
+  }
+  const result = await Order.findByIdAndUpdate(orderId, { status });
+  return result;
+};
+
+const getCustomerOrders = async (email) => {
+  const result = await Order.find({ "shipping.email": email }).sort({ createdAt: -1 });
+  return result;
+};
+
 const OrderService = {
   createCheckoutSession,
   markAsSuccessful,
   getAllOrders,
+  updateOrderStatus,
+  getCustomerOrders
 };
 
 module.exports = OrderService;

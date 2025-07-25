@@ -26,11 +26,25 @@ const getAllOrders = catchAsync(async (req, res) => {
   const result = await OrderService.getAllOrders(page, limit);
   sendResponse(res, 200, true, "Orders fetched successfully!", result);
 });
+const updateOrderStatus = catchAsync(async (req, res) => {
+  const orderId = req.params.id;
+  const status = req.body.status;
+  const result = await OrderService.updateOrderStatus(orderId, status);
+  sendResponse(res, 200, true, "Order status updated successfully!", result);
+})
+
+const getCustomerOrders = catchAsync(async (req, res) => {
+  const email = req.params.email;
+  const result = await OrderService.getCustomerOrders(email);
+  sendResponse(res, 200, true, "Orders fetched successfully!", result);
+});
 
 const OrderControllers = {
   createCheckoutSession,
   markAsSuccessful,
-  getAllOrders
+  getAllOrders,
+  updateOrderStatus,
+  getCustomerOrders
 };
 
 module.exports = OrderControllers;
